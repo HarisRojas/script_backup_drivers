@@ -16,8 +16,9 @@ El script está disponible en dos versiones con el mismo nombre para adaptarse a
 * **Auto-Elevación UAC:** El script detecta si cuenta con privilegios de Administrador; de no ser así, solicita de forma automática la elevación de permisos mediante la ventana flotante de Windows.
 * **Soporte UTF-8 Completo:** Formateado correctamente para interpretar caracteres especiales, tildes y eñes sin romper la estética visual de la consola.
 * **Ajuste Visual Automático:** Configura el tamaño de la ventana y de la fuente tipográfica a una visualización grande y clara (Consolas 20pt) para comodidad en trabajos de campo.
-* **Compatibilidad Multi-Versión:** * En Windows 10 y 11 utiliza la potencia nativa de **DISM** tanto para inyección como para extracción en caliente.
-    * En Windows 7 y 8 emplea **PnPUtil** y copias estructuradas del `DriverStore` como método de contingencia.
+* **Compatibilidad Multi-Versión:**
+*    En Windows 10 y 11 utiliza la potencia nativa de **DISM** tanto para inyección como para extracción en caliente.
+*    En Windows 7 y 8 emplea **PnPUtil** y copias estructuradas del `DriverStore` como método de contingencia.
 
 ---
 
