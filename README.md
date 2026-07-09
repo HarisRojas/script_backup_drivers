@@ -11,14 +11,13 @@ El script está disponible en dos versiones con el mismo nombre para adaptarse a
 ## ✨ Características Principales
 
 * **Doble Flujo Inteligente:** Si el equipo no existe en la base de datos, realiza un respaldo automático. Si ya existe, te ofrece un menú interactivo para **restaurar** los drivers en una reinstalación limpia o **sobrescribir/actualizar** el respaldo existente.
-* **Detección de Hardware Nativa:** Consulta automáticamente el fabricante y modelo de la Placa Base (`BaseBoard`) para organizar los drivers en carpetas limpias (ej. `\drivers\ASUSTeK_COMPUTER_INC.\Prime_B450M-A`)
+* **Detección de Hardware Nativa:** Consulta automáticamente el fabricante y modelo de la Placa Base (`BaseBoard`) para organizar los drivers en carpetas limpias (ej. `\drivers\ASUSTeK_COMPUTER_INC.\Prime_B450M-A`).
 * **Filtro para Equipos Clónicos:** Detecta textos genéricos de fábrica como *"To be filled by O.E.M."* o *"Default string"* y les asigna un identificador aleatorio único para evitar colisiones de carpetas.
 * **Auto-Elevación UAC:** El script detecta si cuenta con privilegios de Administrador; de no ser así, solicita de forma automática la elevación de permisos mediante la ventana flotante de Windows.
 * **Soporte UTF-8 Completo:** Formateado correctamente para interpretar caracteres especiales, tildes y eñes sin romper la estética visual de la consola.
 * **Ajuste Visual Automático:** Configura el tamaño de la ventana y de la fuente tipográfica a una visualización grande y clara (Consolas 20pt) para comodidad en trabajos de campo.
-* **Compatibilidad Multi-Versión:**
-*    En Windows 10 y 11 utiliza la potencia nativa de **DISM** tanto para inyección como para extracción en caliente.
-*    En Windows 7 y 8 emplea **PnPUtil** y copias estructuradas del `DriverStore` como método de contingencia.
+* **Inmunidad al Error 50 (Optimización de Arquitectura):** * **Respaldo:** Ambos scripts corrigen automáticamente la redirección de arquitectura (SysWOW64 / Sysnative) y usan cmdlets puros en PowerShell (`Export-WindowsDriver`), eliminando los cuelgues típicos de DISM al extraer drivers en caliente.
+    * **Restauración:** Se implementa el uso universal de **PnPUtil**, la herramienta oficial de Windows para inyección en sistemas activos. Esto evita bloqueos en el Registro de configuraciones de Windows y asegura que la instalación funcione a la primera en cualquier edición (incluyendo Windows 10 Home 22H2 o Windows 11).
 
 ---
 
