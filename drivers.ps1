@@ -3,7 +3,7 @@
     Backup / Restore de drivers de Windows (equivalente a drivers.bat)
 .DESCRIPTION
     Detecta la placa base del equipo, y permite exportar (respaldar) o
-    importar (restaurar) los drivers usando DISM (Windows 10/11) o
+    importar (restaurar) los drivers usando cmdlets nativos (Windows 10/11) o
     PnPUtil / copia manual (Windows 7/8).
 #>
 
@@ -71,12 +71,12 @@ $modelo = ""
 if ($winVerMajor -ge 10) {
     # --- METODO MODERNO (Windows 10/11) ---
     Write-Host "[INFO] Windows 10/11 detectado."
-    Write-Host "Usando metodo moderno (PowerShell + DISM)..."
+    Write-Host "Usando metodo moderno nativo (cmdlets de PowerShell)..."
 
     $baseBoard = Get-CimInstance Win32_BaseBoard
     $marca = $baseBoard.Manufacturer.Trim()
     $modelo = $baseBoard.Product.Trim()
-    $metodoBackup = "DISM"
+    $metodoBackup = "NATUR"
 } else {
     # --- METODO ANTIGUO (Windows 7/8) ---
     Write-Host "[INFO] Windows antiguo detectado (7/8)."
@@ -114,10 +114,14 @@ function Restaurar-Drivers {
     Write-Host "Por favor, espera..."
     Write-Host ""
 
-    if ($metodoBackup -eq "DISM") {
-        dism /online /add-driver /driver:"$destino" /recurse
+    # Solución definitiva al error del Registro: Buscamos e instalamos mediante PnPUtil de forma segura e interactiva
+    if (Test-Path $destino) {
+        Get-ChildItem -Path $destino -Filter *.inf -Recurse | ForEach-Object {
+            Write-Host "[INSTALANDO] $_.Name" -ForegroundColor Cyan
+            pnputil /add-driver $_.FullName /install | Out-Null
+        }
     } else {
-        pnputil /add-driver "$destino\*.inf" /subdirs /install
+        Write-Host "[ERROR] No se encontró la carpeta de origen de los drivers." -ForegroundColor Red
     }
 }
 
@@ -130,10 +134,10 @@ function Exportar-Drivers {
         New-Item -ItemType Directory -Path $destino -Force | Out-Null
     }
 
-    if ($metodoBackup -eq "DISM") {
-        dism /online /export-driver /destination:"$destino"
+    if ($metodoBackup -eq "NATUR") {
+        Export-WindowsDriver -Online -DestinationPath "$destino"
     } else {
-        Write-Host "[INFO] Windows 7 no soporta DISM /Export-Driver en caliente."
+        Write-Host "[INFO] Windows 7 no soporta la exportación en caliente."
         Write-Host "[INFO] Extrayendo el DriverStore completo (FileRepository) de forma nativa..."
         Write-Host ""
         Copy-Item -Path "C:\Windows\System32\DriverStore\FileRepository\*" -Destination $destino -Recurse -Force
