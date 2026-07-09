@@ -98,8 +98,8 @@ if "%OPCION%"=="3" (
 )
 :: Por si el usuario presiona otra tecla inválida:
 echo Opción no válida.
-pause
-exit /b
+	pause 
+	exit /b
 
 
 :restaurar_drivers
@@ -111,13 +111,9 @@ echo Buscando en: %DESTINO%
 echo Por favor, espera...
 echo.
 
-if "%METODO_BACKUP%"=="DISM" (
-    :: Comando ultra eficiente para Windows 10/11 (inyecta todos los .inf recursivamente)
-    dism /online /add-driver /driver:"%DESTINO%" /recurse
-) else (
-    :: Alternativa nativa para Windows 7/8 usando PnPUtil
-    pnputil /add-driver "%DESTINO%\*.inf" /subdirs /install
-)
+:: SOLUCIÓN DEFINITIVA AL ERROR 50 EN RESTAURACIÓN:
+:: Usamos PnPUtil de manera universal. Evita el bloqueo del registro y de imagen offline de DISM.
+pnputil /add-driver "%DESTINO%\*.inf" /subdirs /install
 goto :finalizar
 
 
@@ -125,7 +121,6 @@ goto :finalizar
 echo.
 echo Exportando drivers actuales del sistema... Por favor, espera.
 echo.
-
 if not exist "%DESTINO%" mkdir "%DESTINO%"
 
 if "%METODO_BACKUP%"=="DISM" goto :exportar_dism
@@ -133,13 +128,19 @@ goto :exportar_manual
 
 
 :exportar_dism
-dism /online /export-driver /destination:"%DESTINO%"
+:: SOLUCIÓN AL ERROR 50 EN RESPALDO (Redirección SysWOW64):
+:: Si la consola se abrió en modo 32 bits dentro de un Windows de 64 bits, forzamos el uso de la carpeta Sysnative
+if exist "%SystemRoot%\Sysnative\dism.exe" (
+    "%SystemRoot%\Sysnative\dism.exe" /online /export-driver /destination:"%DESTINO%"
+) else (
+    dism /online /export-driver /destination:"%DESTINO%"
+)
 goto :finalizar
 
 
 :exportar_manual
 echo [INFO] Windows 7 no soporta DISM /Export-Driver en caliente.
-echo [INFO] Extrayendo el DriverStore completo (FileRepository) de forma nativa...
+echo [INFO] Extrayendo el DriverStore completo (FileRepository) de forma nativa... [cite: 14]
 echo.
 xcopy "C:\Windows\System32\DriverStore\FileRepository" "%DESTINO%" /s /e /h /i /c /y
 goto :finalizar
@@ -151,3 +152,4 @@ echo ===================================================
 echo   [OK] ¡Operación procesada correctamente!
 echo ===================================================
 pause
+exit /b
