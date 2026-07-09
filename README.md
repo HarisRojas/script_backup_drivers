@@ -1,4 +1,4 @@
-# Gestor Avanzado de Drivers 🚀
+# Gestor Avanzado de Drivers 💾
 
 Este repositorio contiene una herramienta automatizada bidireccional diseñada para técnicos de soporte y administradores de sistemas. Permite la **exportación automatizada (respaldo)** y la **instalación automática (restauración)** de controladores (drivers) de forma totalmente nativa, organizando todo de forma inteligente en una base de datos local según la marca y modelo del hardware detectado.
 
