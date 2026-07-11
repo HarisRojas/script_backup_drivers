@@ -135,7 +135,8 @@ function Exportar-Drivers {
     }
 
     if ($metodoBackup -eq "NATUR") {
-        Export-WindowsDriver -Online -DestinationPath "$destino"
+        # Corrección: Se cambió -DestinationPath por el parámetro correcto -Destination
+        Export-WindowsDriver -Online -Destination "$destino"
     } else {
         Write-Host "[INFO] Windows 7 no soporta la exportación en caliente."
         Write-Host "[INFO] Extrayendo el DriverStore completo (FileRepository) de forma nativa..."
